@@ -1,0 +1,7 @@
+*
+!.gitignore
+!CUDAHammingMean.h
+!CUDAHammingMean.cu
+!Makefile
+!main.cpp
+!README.md
