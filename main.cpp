@@ -32,10 +32,10 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
-#include <numeric>
 #include <chrono>
 #include <cstring>
 #include <iostream>
+#include <numeric>
 #include <vector>
 
 using namespace std::chrono;
