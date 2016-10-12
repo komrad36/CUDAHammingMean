@@ -38,7 +38,7 @@ __global__ void
 #ifndef __INTELLISENSE__
 __launch_bounds__(256, 0)
 #endif
-CUDAK2NN_kernel(const cudaTextureObject_t tex_q, const int num_q, const uint64_t* __restrict__ g_training, const int num_t, uint32_t* const __restrict__ g_sums) {
+CUDAHammingMean_kernel(const cudaTextureObject_t tex_q, const int num_q, const uint64_t* __restrict__ g_training, const int num_t, uint32_t* const __restrict__ g_sums) {
 	uint64_t train = *(g_training += threadIdx.x & 7);
 	g_training += 8;
 	uint64_t q[8];
@@ -65,7 +65,7 @@ CUDAK2NN_kernel(const cudaTextureObject_t tex_q, const int num_q, const uint64_t
 	if (idx < num_q) g_sums[idx] = total;
 }
 
-void CUDAK2NN(const void* const __restrict d_t, const int num_t, const cudaTextureObject_t tex_q, const int num_q, uint32_t* const __restrict d_sums) {
-	CUDAK2NN_kernel<<<((num_q - 1) >> 8) + 1, { 32, 8 }>>>(tex_q, num_q, reinterpret_cast<const uint64_t*>(d_t), num_t, d_sums);
+void CUDAHammingMean(const void* const __restrict d_t, const int num_t, const cudaTextureObject_t tex_q, const int num_q, uint32_t* const __restrict d_sums) {
+	CUDAHammingMean_kernel<<<((num_q - 1) >> 8) + 1, { 32, 8 }>>>(tex_q, num_q, reinterpret_cast<const uint64_t*>(d_t), num_t, d_sums);
 	cudaDeviceSynchronize();
 }

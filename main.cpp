@@ -97,10 +97,10 @@ int main() {
 	cudaMalloc(&d_sums, sizeof(uint32_t) * qsize);
 
 	std::cout << std::endl << "Warming up..." << std::endl;
-	for (int i = 0; i < warmups; ++i) CUDAK2NN(d_tvecs, tsize, tex_q, qsize, d_sums);
+	for (int i = 0; i < warmups; ++i) CUDAHammingMean(d_tvecs, tsize, tex_q, qsize, d_sums);
 	std::cout << "Testing..." << std::endl;
 	high_resolution_clock::time_point start = high_resolution_clock::now();
-	for (int i = 0; i < runs; ++i) CUDAK2NN(d_tvecs, tsize, tex_q, qsize, d_sums);
+	for (int i = 0; i < runs; ++i) CUDAHammingMean(d_tvecs, tsize, tex_q, qsize, d_sums);
 	high_resolution_clock::time_point end = high_resolution_clock::now();
 	// --------------------------------
 

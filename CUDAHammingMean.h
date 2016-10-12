@@ -47,4 +47,4 @@
 #undef __CUDACC__
 #endif
 
-void CUDAK2NN(const void* const __restrict d_t, const int num_t, const cudaTextureObject_t tex_q, const int num_q, uint32_t* const __restrict d_sums);
+void CUDAHammingMean(const void* const __restrict d_t, const int num_t, const cudaTextureObject_t tex_q, const int num_q, uint32_t* const __restrict d_sums);
