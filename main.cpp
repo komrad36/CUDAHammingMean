@@ -87,14 +87,14 @@ int main() {
 	cudaTextureObject_t tex_q = 0;
 	cudaCreateTextureObject(&tex_q, &resDesc, &texDesc, nullptr);
 
-	// allocating and transferring query vecs as simple global
+	// allocating and transferring training vecs as simple global
 	void* d_tvecs;
-	cudaMalloc(&d_tvecs, 64 * tsize);
+	cudaMalloc(&d_tvecs, 64 * (tsize + 8));
 	cudaMemcpy(d_tvecs, tvecs, 64 * tsize, cudaMemcpyHostToDevice);
 
 	// allocating space for sums (results)
-	uint64_t* d_sums;
-	cudaMalloc(&d_sums, sizeof(uint64_t) * qsize);
+	uint32_t* d_sums;
+	cudaMalloc(&d_sums, sizeof(uint32_t) * qsize);
 
 	std::cout << std::endl << "Warming up..." << std::endl;
 	for (int i = 0; i < warmups; ++i) CUDAK2NN(d_tvecs, tsize, tex_q, qsize, d_sums);
@@ -106,8 +106,8 @@ int main() {
 
 
 	// transferring sums back to host
-	uint64_t* h_sums = reinterpret_cast<uint64_t*>(malloc(sizeof(uint64_t) * qsize));
-	cudaMemcpy(h_sums, d_sums, sizeof(uint64_t) * qsize, cudaMemcpyDeviceToHost);
+	uint32_t* h_sums = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t) * qsize));
+	cudaMemcpy(h_sums, d_sums, sizeof(uint32_t) * qsize, cudaMemcpyDeviceToHost);
 	cudaDeviceReset();
 
 	std::cout << "CUDA reports " << cudaGetErrorString(cudaGetLastError()) << std::endl;
@@ -117,7 +117,7 @@ int main() {
 
 	const double sec = static_cast<double>(duration_cast<nanoseconds>(end - start).count()) * 1e-9 / static_cast<double>(runs);
 	std::cout.precision(15);
-	std::cout << "CUDAK2NN found the mean to be " << total << ", in ";
+	std::cout << "CUDAHammingMean found the mean to be " << total << ", in ";
 	std::cout.precision(-1);
 	std::cout << sec * 1e3 << " ms" << std::endl;
 	std::cout << "Throughput: " << static_cast<double>(qsize)*static_cast<double>(tsize) / sec * 1e-9 << " billion comparisons/second." << std::endl << std::endl;
